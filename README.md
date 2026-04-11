@@ -1,90 +1,76 @@
-# Orion: Pipeline ETL de Dados do PNCP
+# Orion - Pipeline ETL de Dados do PNCP
 
-## Visão geral
+## Integrantes do grupo
 
-O Orion é um pipeline ETL em Python projetado para extrair dados de contratações públicas do Portal Nacional de Contratações Públicas (PNCP), transformar esses dados em um formato padronizado e persistí-los no MongoDB Atlas.
+- Arllesson Gomes
+- Hugo Ponciano
+- João Miguel Freitas
+- Larissa Lima
+- Lucas Lima
+- Vinicius Pazos
 
-O projeto foi estruturado com foco em boas práticas de engenharia de dados:
-- orientação a objetos;
-- modularização por camadas;
-- validação com Pydantic;
-- logging estruturado;
-- tratamento de erros;
+## Sobre o projeto
+
+O **Orion** é um pipeline de **ETL (Extract, Transform, Load)** desenvolvido em Python para coletar dados do **Portal Nacional de Contratações Públicas (PNCP)**, tratar essas informações e persisti-las no **MongoDB Atlas**.
+
+O projeto foi estruturado seguindo os requisitos da disciplina de **Engenharia de Dados**, com foco em:
+
+- organização modular do pipeline;
+- uso de **orientação a objetos**;
+- uso de **docstrings**;
+- separação clara entre extração, transformação e carga;
 - configuração por variáveis de ambiente;
-- testes básicos;
-- padronização de código com Black.
+- documentação de execução e arquitetura.
 
-## Grupo
+---
 
-Arllesson Gomes, Hugo Ponciano, João Miguel Freitas, Larissa Lima, Lucas Lima e Vinicius Pazos.
+## Objetivo da atividade
 
-## Objetivo da solução
+Adaptar o ETL desenvolvido anteriormente para utilizar a **API do PNCP**, mantendo uma estrutura de projeto organizada e aderente às boas práticas vistas em sala.
 
-O objetivo do Orion é disponibilizar uma base confiável e reutilizável de dados do PNCP para uso posterior em:
-- dashboards;
-- análises exploratórias;
-- monitoramento;
-- relatórios;
-- aplicações analíticas ou operacionais.
+Ao final do fluxo, os dados coletados e tratados são armazenados no **MongoDB Atlas**, permitindo reaproveitamento em análises futuras, dashboards ou sistemas backend.
 
-## Arquitetura do ETL
+---
 
-A arquitetura foi dividida em camadas para melhorar manutenção, legibilidade, extensibilidade e testabilidade.
+## O que o pipeline faz
 
-### Extract
+O pipeline executa três etapas principais:
 
-Responsável por:
-- consultar a API do PNCP;
-- paginar os resultados;
-- tratar erros HTTP;
-- aplicar retentativas;
-- registrar logs operacionais.
+### 1. Extração
+Consulta a API do PNCP de forma paginada, permitindo filtros por:
 
-### Transform
+- intervalo de datas;
+- UF;
+- modalidade de contratação;
+- limite de páginas.
 
-Responsável por:
-- validar o payload recebido;
-- normalizar nomes de campos;
-- converter tipos;
-- padronizar valores;
-- descartar registros inválidos.
+### 2. Transformação
+Normaliza os registros retornados pela API, validando campos relevantes e padronizando a estrutura dos dados com **Pydantic**.
 
-### Load
+### 3. Carga
+Realiza a persistência dos documentos tratados no **MongoDB Atlas**, utilizando operações de **upsert**, evitando duplicidades com base no identificador do contrato.
 
-Responsável por:
-- conectar ao MongoDB Atlas;
-- validar a conexão com `ping`;
-- criar índice único em `id`;
-- realizar operações de `upsert` com `bulk_write`;
-- evitar duplicidade de documentos.
+---
 
-## Fluxo de dados
+## Arquitetura da solução
 
-1. O pipeline lê as configurações do arquivo `.env`.
-2. O extrator consulta a API do PNCP de forma paginada.
-3. Os registros brutos são enviados ao transformador.
-4. O transformador valida e normaliza os dados.
-5. O loader persiste os dados tratados no MongoDB Atlas.
-6. Logs são registrados em console e em arquivo.
+A aplicação segue uma arquitetura em camadas simples e modular:
 
-## Tecnologias utilizadas
+- **Extractor**: responsável por consumir a API do PNCP;
+- **Transformer**: responsável por validar, limpar e normalizar os dados;
+- **Loader**: responsável por salvar os dados no MongoDB Atlas;
+- **Config**: centraliza as variáveis de ambiente e regras de validação;
+- **Models**: define o modelo de dados tratado;
+- **Utils**: concentra logger e exceções customizadas;
+- **Main**: coordena a execução completa do pipeline.
 
-O projeto foi desenvolvido com as seguintes tecnologias e bibliotecas:
-- Python 3.11+;
-- requests;
-- pymongo;
-- dnspython;
-- python-dotenv;
-- loguru;
-- pydantic;
-- pydantic-settings;
-- pytest;
-- black;
-- MongoDB Atlas.
+Essa separação facilita manutenção, testes e evolução do projeto.
 
-## Estrutura de pastas
+---
 
-```text
+## Estrutura do projeto
+
+
 orion-eng-de-dados/
 ├── src/
 │   ├── __init__.py
@@ -105,116 +91,63 @@ orion-eng-de-dados/
 │       ├── exceptions.py
 │       └── logger.py
 ├── tests/
-│   ├── conftest.py
-│   ├── test_extractor.py
-│   ├── test_loader.py
 │   └── test_transformer.py
-├── .env.example
-├── .gitignore
+├── README.md
 ├── pyproject.toml
-├── requirements.txt
-└── README.md
-````
+└── requirements.txt
 
-## Instalação
+Tecnologias utilizadas
+Python 3.11+
+requests para consumo da API
+pydantic e pydantic-settings para validação e configuração
+pymongo para integração com o MongoDB Atlas
+python-dotenv para leitura de variáveis de ambiente
+loguru para logging
+pytest para testes
+black para formatação de código
+Fluxo de dados
 
-### Clonar o repositório
+O fluxo executado pelo Orion pode ser resumido assim:
 
-Clone o repositório e acesse a pasta do projeto:
+API do PNCP
+   ↓
+Extração paginada dos dados
+   ↓
+Validação e normalização
+   ↓
+Tratamento dos campos relevantes
+   ↓
+Carga no MongoDB Atlas com upsert
+Pré-requisitos
 
-```bash
+Antes de executar o projeto, você precisa ter instalado:
+
+Python 3.11 ou superior
+acesso à internet para consumir a API do PNCP
+uma conta no MongoDB Atlas
+uma string de conexão válida com o MongoDB
+Instalação
+1. Clonar o repositório
 git clone https://github.com/Joao-Miguel-F/orion-eng-de-dados.git
 cd orion-eng-de-dados
-```
+2. Criar o ambiente virtual
 
-### Criar e ativar o ambiente virtual
+No Windows PowerShell:
 
-#### Linux/macOS
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-#### Windows PowerShell
-
-```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
-```
 
-### Instalar as dependências
+No Linux/macOS:
 
-```bash
+python3 -m venv .venv
+source .venv/bin/activate
+3. Instalar as dependências
 pip install -r requirements.txt
-```
+Configuração do ambiente
 
-## Configuração das variáveis de ambiente
+Crie um arquivo .env na raiz do projeto com as variáveis abaixo:
 
-Copie o arquivo de exemplo para criar seu arquivo `.env`.
-
-### Linux/macOS
-
-```bash
-cp .env.example .env
-```
-
-### Windows PowerShell
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Depois, edite o arquivo `.env` com os valores necessários.
-
-### Variáveis principais
-
-* `MONGO_URI`: string de conexão com o MongoDB Atlas;
-* `MONGO_DB_NAME`: nome do banco de dados;
-* `MONGO_COLLECTION_NAME`: nome da coleção;
-* `PNCP_BASE_URL`: URL base da API do PNCP;
-* `PNCP_PAGE_SIZE`: quantidade de registros por página;
-* `PNCP_TIMEOUT`: timeout da requisição HTTP;
-* `PNCP_MAX_RETRIES`: número de tentativas por consulta;
-* `ETL_DATE_INITIAL`: data inicial no formato `YYYYMMDD` ou `YYYY-MM-DD`;
-* `ETL_DATE_FINAL`: data final no formato `YYYYMMDD` ou `YYYY-MM-DD`;
-* `ETL_UF_FILTER`: filtro opcional por UF;
-* `ETL_MODALITY_CODE`: filtro opcional por modalidade;
-* `ETL_MAX_PAGES`: limite opcional de páginas;
-* `MONGO_SERVER_SELECTION_TIMEOUT_MS`: timeout de seleção do cluster;
-* `MONGO_CONNECT_TIMEOUT_MS`: timeout de conexão;
-* `MONGO_SOCKET_TIMEOUT_MS`: timeout de leitura e escrita.
-
-## Forma de execução
-
-Execute o pipeline a partir da raiz do projeto:
-
-```bash
-python -m src.main
-```
-
-## Uso do Black
-
-Para formatar o projeto:
-
-```bash
-black src tests
-```
-
-## Executando os testes
-
-Para executar os testes automatizados:
-
-```bash
-pytest
-```
-
-## Exemplo de uso
-
-### Exemplo de `.env`
-
-```env
-MONGO_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/?retryWrites=true&w=majority&appName=orion-cluster
+MONGO_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/?retryWrites=true&w=majority
 MONGO_DB_NAME=orion
 MONGO_COLLECTION_NAME=contracts
 
@@ -232,89 +165,95 @@ ETL_MAX_PAGES=1
 MONGO_SERVER_SELECTION_TIMEOUT_MS=10000
 MONGO_CONNECT_TIMEOUT_MS=10000
 MONGO_SOCKET_TIMEOUT_MS=20000
-```
+Descrição das principais variáveis
+MONGO_URI: string de conexão com o MongoDB Atlas
+MONGO_DB_NAME: nome do banco
+MONGO_COLLECTION_NAME: nome da coleção
+PNCP_BASE_URL: URL base da API do PNCP
+PNCP_PAGE_SIZE: quantidade de registros por página
+PNCP_TIMEOUT: timeout da requisição HTTP
+PNCP_MAX_RETRIES: número máximo de tentativas por requisição
+ETL_DATE_INITIAL: data inicial da extração
+ETL_DATE_FINAL: data final da extração
+ETL_UF_FILTER: filtro opcional por UF
+ETL_MODALITY_CODE: filtro opcional por modalidade
+ETL_MAX_PAGES: limite opcional de páginas por execução
+MONGO_SERVER_SELECTION_TIMEOUT_MS: timeout de seleção do servidor MongoDB
+MONGO_CONNECT_TIMEOUT_MS: timeout de conexão
+MONGO_SOCKET_TIMEOUT_MS: timeout de leitura/escrita
 
-### Exemplo de execução
+As datas podem ser informadas nos formatos YYYYMMDD ou YYYY-MM-DD.
 
-```bash
+Como executar
+
+Com o ambiente virtual ativado e o .env configurado, execute:
+
 python -m src.main
-```
 
-### Exemplo de logs esperados
+Durante a execução, o pipeline:
 
-```text
-2026-04-11 03:25:00 | INFO     | src.core.extractor:extract_contracts - Extração concluída com 10 contratos.
-2026-04-11 03:25:00 | INFO     | src.core.transformer:transform_contracts - Transformação concluída. Válidos: 10 | Inválidos: 0 | Total: 10
-2026-04-11 03:25:01 | INFO     | src.core.loader:load_contracts - Carga concluída no MongoDB. Recebidos: 10 | Operações: 10 | Inseridos: 10 | Atualizados: 0
-```
+consulta a API do PNCP;
+coleta os registros de forma paginada;
+transforma os dados para um formato padronizado;
+conecta ao MongoDB Atlas;
+insere ou atualiza os contratos na coleção configurada.
 
-## Tratamento de erros e logging
+Os logs da execução ajudam no acompanhamento do processo e no diagnóstico de falhas.
 
-O projeto possui mecanismos para aumentar a confiabilidade da execução, incluindo:
+Exemplo de execução
 
-* exceções customizadas por etapa;
-* logs em console;
-* logs em arquivo na pasta `logs/`;
-* mensagens de erro mais claras;
-* encerramento seguro de conexões.
+Exemplo para extrair publicações de uma data específica do estado de Alagoas:
 
-## MongoDB Atlas
+ETL_DATE_INITIAL=20240625
+ETL_DATE_FINAL=20240625
+ETL_UF_FILTER=AL
+ETL_MODALITY_CODE=6
+ETL_MAX_PAGES=1
 
-O projeto foi preparado para gravar dados tratados no MongoDB Atlas.
+Depois, execute:
 
-A coleção recebe um índice único no campo:
-
-```text
-id
-```
-
-Isso permite realizar operações de `upsert` sem duplicidade e facilita reprocessamentos.
-
-### Instruções para configurar e usar o MongoDB Atlas
-
-Para configurar o ambiente no MongoDB Atlas:
-
-1. crie um cluster no MongoDB Atlas;
-2. crie um Database User;
-3. libere seu IP em `Network Access`;
-4. copie a connection string em `Connect > Drivers`;
-5. atualize o valor de `MONGO_URI` no arquivo `.env`;
-6. execute o pipeline com:
-
-```bash
 python -m src.main
-```
+Testes
 
-## Diferenciais implementados
+Para executar os testes automatizados do projeto:
 
-Entre os diferenciais já implementados no projeto, destacam-se:
+pytest
 
-* arquitetura modular por camadas;
-* tratamento de erros por etapa;
-* logging estruturado;
-* validação e normalização com Pydantic;
-* testes básicos;
-* configuração por `.env`;
-* persistência real no MongoDB Atlas.
+Atualmente, o projeto possui teste voltado para a etapa de transformação dos dados.
 
-## Limitações atuais
+Formatação de código
 
-No estado atual, o projeto possui algumas limitações:
+Para padronizar o código com o Black:
 
-* o endpoint do PNCP pode apresentar variações de desempenho;
-* a extração ainda é síncrona;
-* o projeto está focado em uma entidade principal;
-* ainda não há orquestração externa;
-* os testes ainda são básicos.
+black src tests
+Persistência no MongoDB Atlas
 
-## Melhorias futuras
+A carga dos dados é feita no MongoDB Atlas utilizando operações de upsert. Isso significa que:
 
-Como evoluções futuras, o projeto pode receber:
+se o contrato ainda não existir, ele será inserido;
+se já existir, ele será atualizado.
 
-* integração com Airflow ou Prefect;
-* persistência adicional em PostgreSQL;
-* expansão da suíte de testes;
-* exposição de métricas operacionais;
-* geração de datasets analíticos derivados;
-* integração com dashboards ou análises exploratórias;
-* CI/CD com GitHub Actions.
+Esse comportamento evita duplicações e facilita reprocessamentos do ETL.
+
+Boas práticas aplicadas
+
+Este projeto adota as seguintes práticas de Engenharia de Dados:
+
+separação do pipeline em responsabilidades bem definidas;
+orientação a objetos;
+docstrings em classes e métodos;
+validação de dados;
+tratamento de exceções;
+uso de logging;
+configuração externa por variáveis de ambiente;
+teste automatizado da transformação.
+
+Melhorias futuras
+ampliar a cobertura de testes para extração e carga;
+adicionar agendamento automático do ETL;
+armazenar também dados brutos para auditoria;
+disponibilizar uma camada de consumo para backend ou dashboard;
+criar monitoramento mais robusto para falhas de execução.
+Conclusão
+
+O Orion entrega uma solução ETL modular para dados do PNCP, alinhada aos requisitos da disciplina de Engenharia de Dados. O projeto demonstra a aplicação de conceitos como arquitetura em camadas, orientação a objetos, validação, documentação e persistência em banco NoSQL na nuvem.
