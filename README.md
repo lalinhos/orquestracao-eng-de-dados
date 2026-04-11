@@ -1,6 +1,3 @@
-Segue o `README.md` unificado, com a segunda parte formatada no mesmo padrão da primeira:
-
-````markdown
 # Orion: Pipeline ETL de Dados do PNCP
 
 ## Visão geral
