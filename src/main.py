@@ -1,6 +1,7 @@
 from src.core import PncpExtractor, PncpTransformer, MongoLoader
 from src.utils import logger, OrionETLError
 
+
 def main():
     """Orquestrador principal do pipeline ETL Orion."""
     logger.info("Pipeline ETL Orion iniciado.")

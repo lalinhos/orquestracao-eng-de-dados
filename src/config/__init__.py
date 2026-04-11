@@ -1,3 +1,5 @@
-from .settings import settings
+"""Configurações centralizadas do projeto Orion."""
 
-__all__ = ["settings"]
+from .settings import Settings, settings
+
+__all__ = ["Settings", "settings"]

@@ -29,5 +29,7 @@ class PncpTransformer:
                 logger.error(f"Erro inesperado na transformação do registro {i}: {e}")
                 raise TransformationError(f"Erro na transformação: {e}")
 
-        logger.info(f"Transformação concluída. {len(transformed_contracts)} de {len(raw_contracts)} contratos válidos.")
+        logger.info(
+            f"Transformação concluída. {len(transformed_contracts)} de {len(raw_contracts)} contratos válidos."
+        )
         return transformed_contracts
