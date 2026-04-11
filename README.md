@@ -3,6 +3,14 @@
 ## Visão Geral
 Orion é um pipeline ETL (Extract, Transform, Load) robusto e modular, projetado para extrair eficientemente dados de contratações públicas da API do Portal Nacional de Contratações Públicas (PNCP), transformá-los em um formato padronizado e carregá-los em um banco de dados MongoDB Atlas. Este projeto enfatiza a adesão às melhores práticas em engenharia de dados, incluindo design orientado a objetos, logging abrangente e documentação completa, tornando-o adequado para ambientes de produção.
 
+## Grupo:
+Arllesson Gomes,
+Hugo Ponciano,
+João Miuel Freitas,
+Larissa Lima,
+Lucas Lima e
+Vinicius Pazos.
+
 ## Objetivo
 O objetivo principal do Orion é fornecer uma solução confiável e escalável para coletar e estruturar dados do PNCP. Ao automatizar os processos de extração, transformação e carregamento, o Orion permite que aplicações a jusante, como dashboards analíticos ou ferramentas de relatórios, utilizem informações atualizadas de contratações públicas para diversas finalidades, incluindo análise de mercado, monitoramento de conformidade e identificação de oportunidades de negócios.
 
