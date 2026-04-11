@@ -38,12 +38,18 @@ class Contract(BaseModel):
     modalidade_licitacao: str | None = Field(
         default=None,
         validation_alias=AliasChoices(
-            "modalidadeLicitacao", "modalidadeNome", "modalidade_licitacao"
+            "modalidadeLicitacao",
+            "modalidadeNome",
+            "modalidade_licitacao",
         ),
     )
     status_contrato: str | None = Field(
         default=None,
-        validation_alias=AliasChoices("statusContrato", "situacaoCompraNome", "status_contrato"),
+        validation_alias=AliasChoices(
+            "statusContrato",
+            "situacaoCompraNome",
+            "status_contrato",
+        ),
     )
 
     cnpj_contratada: str | None = Field(
@@ -74,7 +80,11 @@ class Contract(BaseModel):
 
     data_publicacao: datetime | None = Field(
         default=None,
-        validation_alias=AliasChoices("dataPublicacao", "dataPublicacaoPncp", "data_publicacao"),
+        validation_alias=AliasChoices(
+            "dataPublicacao",
+            "dataPublicacaoPncp",
+            "data_publicacao",
+        ),
     )
     data_inicio_vigencia: datetime | None = Field(
         default=None,
@@ -90,7 +100,10 @@ class Contract(BaseModel):
     )
     data_encerramento_proposta: datetime | None = Field(
         default=None,
-        validation_alias=AliasChoices("dataEncerramentoProposta", "data_encerramento_proposta"),
+        validation_alias=AliasChoices(
+            "dataEncerramentoProposta",
+            "data_encerramento_proposta",
+        ),
     )
 
     @model_validator(mode="before")

@@ -88,7 +88,8 @@ class MongoLoader:
         except ConfigurationError as exc:
             logger.error("Erro de configuração da URI MongoDB: {}", exc)
             raise LoadingError(
-                "A URI do MongoDB Atlas parece inválida. " "Revise o campo MONGO_URI no .env."
+                "A URI do MongoDB Atlas parece inválida. "
+                "Revise o campo MONGO_URI no .env."
             ) from exc
 
         except ConnectionFailure as exc:

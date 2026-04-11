@@ -1,35 +1,42 @@
-from typing import Any, Dict, List
-from loguru import logger
+from typing import Any
+
 from pydantic import ValidationError
 
-from src.models.contract import Contract
-from src.utils.exceptions import TransformationError
+from src.models import Contract
+from src.utils import TransformationError, logger
 
 
 class PncpTransformer:
-    """
-    Componente responsável pela transformação e validação dos dados brutos.
-    Utiliza Pydantic para garantir que apenas dados válidos sejam processados.
-    """
+    """Responsável por validar e normalizar os dados extraídos."""
 
-    def __init__(self):
-        logger.info("Transformador Orion inicializado.")
+    def transform_contract(self, raw_contract: dict[str, Any]) -> dict[str, Any] | None:
+        """Transforma um único contrato bruto em um dicionário validado."""
+        try:
+            contract = Contract.model_validate(raw_contract)
+            return contract.model_dump()
+        except ValidationError as exc:
+            logger.warning("Contrato inválido ignorado: {}", exc)
+            return None
+        except Exception as exc:
+            raise TransformationError("Erro inesperado ao transformar contrato.") from exc
 
-    def transform_contracts(self, raw_contracts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Valida e normaliza a lista de contratos brutos."""
-        transformed_contracts = []
-        for i, raw_contract in enumerate(raw_contracts):
-            try:
-                # Validação e mapeamento automático via Pydantic
-                contract = Contract(**raw_contract)
-                transformed_contracts.append(contract.model_dump(by_alias=False))
-            except ValidationError as e:
-                logger.warning(f"Contrato inválido no índice {i} (pulando): {e}")
-            except Exception as e:
-                logger.error(f"Erro inesperado na transformação do registro {i}: {e}")
-                raise TransformationError(f"Erro na transformação: {e}")
+    def transform_contracts(self, raw_contracts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Transforma uma lista de contratos brutos em contratos normalizados."""
+        transformed_contracts: list[dict[str, Any]] = []
+        invalid_count = 0
+
+        for raw_contract in raw_contracts:
+            transformed_contract = self.transform_contract(raw_contract)
+            if transformed_contract is None:
+                invalid_count += 1
+                continue
+
+            transformed_contracts.append(transformed_contract)
 
         logger.info(
-            f"Transformação concluída. {len(transformed_contracts)} de {len(raw_contracts)} contratos válidos."
+            "Transformação concluída. Válidos: {} | Inválidos: {} | Total: {}",
+            len(transformed_contracts),
+            invalid_count,
+            len(raw_contracts),
         )
         return transformed_contracts

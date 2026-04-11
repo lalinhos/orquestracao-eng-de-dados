@@ -86,7 +86,7 @@ class PncpExtractor:
                 response = self.session.get(
                     self.endpoint,
                     params=params,
-                    timeout=(10, self.timeout),  # conexão, leitura
+                    timeout=(10, self.timeout),
                 )
 
                 logger.info(

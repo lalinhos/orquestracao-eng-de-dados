@@ -46,18 +46,18 @@ class Settings(BaseSettings):
         description="URL base da API do PNCP.",
     )
     PNCP_PAGE_SIZE: int = Field(
-        default=50,
+        default=10,
         ge=1,
         le=50,
         description="Quantidade de registros por página.",
     )
     PNCP_TIMEOUT: int = Field(
-        default=60,
+        default=30,
         ge=1,
         description="Timeout da requisição HTTP em segundos.",
     )
     PNCP_MAX_RETRIES: int = Field(
-        default=3,
+        default=1,
         ge=1,
         le=10,
         description="Quantidade máxima de tentativas por requisição.",

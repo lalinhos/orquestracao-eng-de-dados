@@ -1,22 +1,14 @@
 class OrionETLError(Exception):
-    """Exceção base para o pipeline Orion."""
-
-    pass
+    """Exceção base para erros do pipeline Orion."""
 
 
 class ExtractionError(OrionETLError):
-    """Erro ao tentar extrair dados da API do PNCP."""
-
-    pass
+    """Erro durante a etapa de extração."""
 
 
 class TransformationError(OrionETLError):
-    """Erro ao validar ou transformar os dados brutos."""
-
-    pass
+    """Erro durante a etapa de transformação."""
 
 
 class LoadingError(OrionETLError):
-    """Erro ao persistir os dados no MongoDB Atlas."""
-
-    pass
+    """Erro durante a etapa de carga."""
