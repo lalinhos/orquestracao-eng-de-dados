@@ -1,11 +1,34 @@
-.venv/
+# Python
 __pycache__/
-.pytest_cache/
-.mypy_cache/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environment
+venv/
+.venv/
+
+# Dados brutos e processados (nao versionar dados)
+data/raw/
+data/processed/
+
+# Variaveis de ambiente e segredos
 .env
+*.env
+
+# Logs
 logs/
+
+# Prefect
+.prefect/
+
+# IDEs
 .vscode/
 .idea/
+
+# OS
+Thumbs.db
+desktop.ini
