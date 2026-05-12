@@ -20,6 +20,8 @@ subst $LetraTemp "$ProjetoReal" | Out-Null
 $env:PYSPARK_PYTHON         = "$LetraTemp\venv\Scripts\python.exe"
 $env:PYSPARK_DRIVER_PYTHON  = "$LetraTemp\venv\Scripts\python.exe"
 $env:SPARK_HOME             = "$LetraTemp\venv\Lib\site-packages\pyspark"
+$env:SPARK_LOCAL_IP         = "127.0.0.1"
+$env:HADOOP_HOME            = "$LetraTemp\venv\Lib\site-packages\pyspark"
 
 & "$LetraTemp\venv\Scripts\Activate.ps1"
 

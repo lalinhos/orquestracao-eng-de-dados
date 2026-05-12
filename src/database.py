@@ -69,6 +69,20 @@ def contar(colecao: str) -> int:
     return _get_db()[colecao].count_documents({})
 
 
+def buscar_raw_por_periodo(data_inicial: str, data_final: str, uf: str) -> list[dict]:
+    """Busca registros brutos no MongoDB filtrando por periodo e UF."""
+    di = f"{data_inicial[:4]}-{data_inicial[4:6]}-{data_inicial[6:]}"
+    df = f"{data_final[:4]}-{data_final[4:6]}-{data_final[6:]}"
+    colecao = _get_db()["contratacoes_raw"]
+    return list(colecao.find(
+        {
+            "dataPublicacaoPncp": {"$gte": di, "$lte": df + "T23:59:59"},
+            "unidadeOrgao.ufSigla": uf.upper(),
+        },
+        {"_id": 0},
+    ))
+
+
 def buscar_por_ramo(ramo: str) -> list[dict]:
     """Retorna todos os editais de um ramo especifico (ex: 'Servicos')."""
     colecao = _get_db()["contratacoes_processadas"]

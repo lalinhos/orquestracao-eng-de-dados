@@ -1,4 +1,5 @@
 import os
+import json
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql.types import DoubleType
@@ -12,14 +13,26 @@ def create_spark_session(app_name: str = "PNCP-Pipeline") -> SparkSession:
         .master("local[*]")
         .config("spark.sql.shuffle.partitions", "4")
         .config("spark.driver.memory", "2g")
+        .config("spark.sql.debug.maxToStringFields", "50")
         .getOrCreate()
     )
-    spark.sparkContext.setLogLevel("WARN")
+    spark.sparkContext.setLogLevel("ERROR")
     return spark
 
 
 def load_from_records(spark: SparkSession, registros: list[dict]) -> DataFrame:
-    return spark.createDataFrame(registros)
+    import tempfile, os
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".json", delete=False, encoding="utf-8"
+    ) as f:
+        json.dump(registros, f, ensure_ascii=False)
+        tmp = f.name
+    try:
+        df = spark.read.option("multiline", "true").json(tmp)
+        df.cache().count()  # materializa em memoria antes de apagar o arquivo
+        return df
+    finally:
+        os.unlink(tmp)
 
 
 def flatten_and_select(df: DataFrame) -> DataFrame:
@@ -87,9 +100,16 @@ def show_summary(df: DataFrame) -> None:
     df.groupBy("razao_social").count().orderBy(F.desc("count")).limit(5).show(truncate=False)
 
     print("-- Valor total estimado por ramo --")
-    df.groupBy("ramo_mei").agg(
-        F.round(F.sum("valorTotalEstimado"), 2).alias("valor_total_R$")
-    ).orderBy(F.desc("valor_total_R$")).show(truncate=False)
+    linhas = (
+        df.groupBy("ramo_mei")
+        .agg(F.sum("valorTotalEstimado").alias("total"))
+        .orderBy(F.desc("total"))
+        .collect()
+    )
+    for row in linhas:
+        valor = row["total"] or 0
+        valor_fmt = f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        print(f"  {row['ramo_mei']:<12} {valor_fmt}")
 
 
 def save_as_csv(df: DataFrame, nome_saida: str) -> str:
