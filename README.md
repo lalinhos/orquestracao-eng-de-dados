@@ -1,6 +1,6 @@
 # Pipeline de Orquestração PNCP
 
-Pipeline de coleta, transformação e armazenamento de dados de contratações públicas da [API do PNCP](https://pncp.gov.br), com orquestração via **Prefect** e processamento distribuído via **Apache Spark**.
+Pipeline de coleta, transformação e armazenamento de dados de contratações públicas da [API do PNCP](https://pncp.gov.br), com orquestração via **Prefect** e processamento via **Apache Spark**.
 
 ## Tecnologias
 
@@ -16,9 +16,9 @@ Pipeline de coleta, transformação e armazenamento de dados de contratações p
 API PNCP → MongoDB (raw) → Spark → MongoDB (processados)
 ```
 
-1. **Coleta** — percorre todas as páginas da API do PNCP com delay de 1.5s entre requisições
+1. **Coleta** — percorre todas as páginas da API do PNCP
 2. **Armazenamento raw** — registros brutos salvos no MongoDB Atlas
-3. **Processamento Spark** — lê do MongoDB, aplica flatten, classifica por ramo do MEI e deduplica
+3. **Processamento Spark** — lê do MongoDB, classifica por ramo do MEI e deduplica
 4. **Armazenamento processado** — dados transformados salvos no MongoDB Atlas
 
 ## Classificação por ramo do MEI
@@ -110,4 +110,8 @@ Ambas usam upsert por `numeroControlePNCP` — rodar o pipeline duas vezes não 
 
 > Pipeline executado com sucesso — 3 tasks concluídas, dados coletados, processados pelo Spark e persistidos no MongoDB Atlas.
 
-<!-- Adicione os prints aqui colando as imagens diretamente no editor do GitHub -->
+<img width="1596" height="785" alt="image" src="https://github.com/user-attachments/assets/0e6bce9e-6e7f-40b0-8f57-b1d43934e059" />
+<img width="1568" height="591" alt="image" src="https://github.com/user-attachments/assets/0cb8cdca-c4e9-43c6-ba54-2377b9186ed0" />
+<img width="860" height="185" alt="image" src="https://github.com/user-attachments/assets/e67335fe-0edc-4687-88d2-eeeae2c0f317" />
+
+
